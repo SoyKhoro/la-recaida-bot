@@ -94,15 +94,15 @@ client.on('messageCreate', async message => {
 });
 
 client.on('guildMemberAdd', async member => {
-  // Asignar el rol automático (independiente de la bienvenida)
-  const rolAutoId = process.env.AUTO_ROLE_ID;
-  if (rolAutoId) {
-    try {
-      await member.roles.add(rolAutoId);
-    } catch (err) {
-      console.error('Error asignando el rol automático:', err);
+     // Asignar los roles automáticos (independiente de la bienvenida)
+    const rolesAutoIds = (process.env.AUTO_ROLE_IDS || '').split(',').map(id => id.trim()).filter(Boolean);
+    for (const rolId of rolesAutoIds) {
+      try {
+        await member.roles.add(rolId);
+      } catch (err) {
+        console.error('Error asignando el rol automático:', rolId, err);
+      }
     }
-  }
 
   // Mandar el mensaje de bienvenida
   const canalId = process.env.WELCOME_CHANNEL_ID;
