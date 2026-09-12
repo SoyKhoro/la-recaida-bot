@@ -7,9 +7,12 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
 
   async execute(interaction) {
-    const embed = new EmbedBuilder()
+    const embedImagen = new EmbedBuilder()
       .setColor('#8B5CF6')
-      .setImage('https://i.imgur.com/qQnQDAq.jpeg')
+      .setImage('https://i.imgur.com/dDxiQkP.png');
+
+    const embedTexto = new EmbedBuilder()
+      .setColor('#8B5CF6')
       .setDescription(
         '☆ A la hora de subir de nivel comprando con Lunas recibirás roles y Lunas como recompensa :3\n\n' +
         '**Niveles:**\n\n' +
@@ -26,7 +29,7 @@ module.exports = {
         `<:1526649755302756472:1548173621833498714> Nivel 40 → <@&1538443039767531590>`
       );
 
-    await interaction.channel.send({ embeds: [embed] });
+    await interaction.channel.send({ embeds: [embedImagen, embedTexto] });
     await interaction.reply({ content: '✅ Info de niveles enviada.', ephemeral: true });
   },
 };
