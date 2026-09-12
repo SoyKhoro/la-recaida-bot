@@ -18,6 +18,6 @@ module.exports = {
       .setThumbnail(usuario.displayAvatarURL())
       .setDescription(`👤 **${usuario.username}**\nID: \`${usuario.id}\``);
 
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed], ephemeral: true });
   },
 };
