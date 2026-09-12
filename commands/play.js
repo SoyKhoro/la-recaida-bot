@@ -3,7 +3,7 @@ const musicManager = require('../musicManager');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('play')
+   .setName('reproducir')
     .setDescription('Reproduce una canción de YouTube o Spotify')
     .addStringOption(opt =>
       opt.setName('cancion')
