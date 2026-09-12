@@ -2,7 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-
+const musicManager = require('./musicManager');
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
 });
@@ -240,7 +240,73 @@ client.on('interactionCreate', async interaction => {
     }, 5000);
     return;
   }
+  if (interaction.isButton() && interaction.customId.startsWith('musica_')) {
+    const guildId = interaction.guild.id;
+    const voiceChannel = interaction.member.voice.channel;
 
+    if (!voiceChannel) {
+      return interaction.reply({ content: '❌ Tenés que estar en un canal de voz.', ephemeral: true });
+    }
+
+    try {
+      switch (interaction.customId) {
+        case 'musica_pausa':
+          musicManager.pausarOReanudar(guildId);
+          await interaction.deferUpdate();
+          await musicManager.actualizarPanel(guildId);
+          break;
+        case 'musica_skip':
+          musicManager.saltar(guildId);
+          await interaction.deferUpdate();
+          break;
+        case 'musica_back': {
+          const ok = musicManager.anterior(guildId);
+          await interaction.deferUpdate();
+          if (!ok) await interaction.followUp({ content: 'No hay canción anterior.', ephemeral: true });
+          break;
+        }
+        case 'musica_stop':
+          musicManager.detener(guildId);
+          await interaction.update({ content: '⏹️ Reproducción detenida.', embeds: [], components: [] });
+          break;
+        case 'musica_volUp':
+          musicManager.cambiarVolumen(guildId, 10);
+          await interaction.deferUpdate();
+          await musicManager.actualizarPanel(guildId);
+          break;
+        case 'musica_volDown':
+          musicManager.cambiarVolumen(guildId, -10);
+          await interaction.deferUpdate();
+          await musicManager.actualizarPanel(guildId);
+          break;
+        case 'musica_loop':
+          musicManager.alternarLoop(guildId);
+          await interaction.deferUpdate();
+          await musicManager.actualizarPanel(guildId);
+          break;
+        case 'musica_autoplay':
+          musicManager.alternarAutoplay(guildId);
+          await interaction.deferUpdate();
+          await musicManager.actualizarPanel(guildId);
+          break;
+        case 'musica_shuffle':
+          musicManager.mezclar(guildId);
+          await interaction.reply({ content: '🔀 Cola mezclada.', ephemeral: true });
+          break;
+        case 'musica_cola': {
+          const estado = musicManager.getCola(guildId);
+          const lista = estado.canciones.length
+            ? estado.canciones.map((c, i) => `${i + 1}. ${c.titulo}`).join('\n')
+            : 'No hay canciones en espera.';
+          await interaction.reply({ content: `📋 **Cola:**\n${lista}`, ephemeral: true });
+          break;
+        }
+      }
+    } catch (err) {
+      console.error('Error manejando botón de música:', err);
+    }
+    return;
+  }
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
