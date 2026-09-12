@@ -17,6 +17,6 @@ module.exports = {
       .setColor(COLOR_ACENTO)
       .setDescription(`📌 **${canal.name}**\nID: \`${canal.id}\``);
 
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed], ephemeral: true });
   },
 };
