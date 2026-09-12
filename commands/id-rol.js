@@ -17,6 +17,6 @@ module.exports = {
       .setColor(COLOR_ACENTO)
       .setDescription(`🏷️ **${rol.name}**\nID: \`${rol.id}\``);
 
-    await interaction.reply({ embeds: [embed] });
+   await interaction.reply({ embeds: [embed], ephemeral: true });
   },
 };
